@@ -1,10 +1,13 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using BMS_V2_Db;
+using Consul;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Ys.Tools.Config;
+using Ys.Tools.Interface;
 
 namespace BMS_V2;
 
@@ -55,7 +58,6 @@ public class Startup
             config.SaveToken = true;
         });
 
-        services.AddMemoryCache();
 
         services.Configure<FormOptions>(x =>
         {
@@ -64,6 +66,14 @@ public class Startup
 
         //注入数据库
         RegisterDb(services);
+        //注入项目基本信息
+        RegisterProject(services);
+        //注入Consul
+        RegisterConsul(services);
+        //注入所有实现类
+        RegisterIBll(services);
+        //注入Token
+        RegisterToken(services);
 
     }
 
@@ -95,6 +105,8 @@ public class Startup
                 await context.Response.WriteAsync("Hello World!");
             });
         });
+        //注册consul
+        RegisterConsul(appLifetime);
     }
 
     /// <summary>
@@ -108,10 +120,117 @@ public class Startup
         //已经注入，可以直接使用
         service.AddDbContext<BmsV2DbContext>(opt =>
         {
-            opt.UseSqlServer(DbConfig.Instance.SqlServer);
+            if (string.IsNullOrWhiteSpace(DbConfig.Instance.SqlType) )
+            {
+                opt.UseSqlServer(DbConfig.Instance.SqlServer);
+            }
+            switch (DbConfig.Instance.SqlType)
+            {
+                case "SqlServer":
+                    opt.UseSqlServer(DbConfig.Instance.SqlServer);
+                    break;
+                case "MySql":
+                    opt.UseMySql(ServerVersion.AutoDetect(DbConfig.Instance.MySql));
+                    break;
+                case "PgSql":
+                    opt.UseNpgsql(DbConfig.Instance.PgSql);
+                    break;
+            }
         });
     }
 
 
+
+    /// <summary>
+    /// 注入数据库
+    /// </summary>
+    /// <param name="service"></param>
+    private void RegisterProject(IServiceCollection service)
+    {
+        service.Configure<ProjectConfig>(_configuration.GetSection("ProjectConfig"));
+        _configuration.Bind("ProjectConfig", ProjectConfig.Instance);
+    }
+
+
+
+    /// <summary>
+    /// 获取consulConfig
+    /// </summary>
+    /// <param name="service"></param>
+    private void RegisterConsul(IServiceCollection service)
+    {
+        //获取配置文件信息
+        service.Configure<ConsulConfig>(_configuration.GetSection("ConsulConfig"));
+        _configuration.Bind("ConsulConfig", ConsulConfig.Instance);
+    }
+
+    /// <summary>
+    /// 注册consul
+    /// </summary>
+    /// <param name="appLifetime"></param>
+    private static void RegisterConsul(IHostApplicationLifetime appLifetime)
+    {
+        using var client = new ConsulClient(x => x.Address = new Uri(ConsulConfig.Instance.BaseUrl));
+        var check = new AgentServiceCheck()
+        {
+            DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),//服务停止后，5s开始接触注册
+            HTTP = ConsulConfig.Instance.CheckApi,//健康检查
+            Interval = TimeSpan.FromSeconds(10),//每10s轮询一次健康检查
+            Timeout = TimeSpan.FromSeconds(5),
+        };
+        var service = new AgentServiceRegistration()
+        {
+            Checks = new[] { check },
+            ID = Guid.NewGuid().ToString(),
+            Name = ConsulConfig.Instance.ServiceName,
+            Port = ConsulConfig.Instance.Port,
+            Address = ConsulConfig.Instance.Address
+        };
+        client.Agent.ServiceRegister(service).Wait();
+        appLifetime.ApplicationStopped.Register(() =>
+        {
+            Console.WriteLine("服务停止中");
+            using var consulClient = new ConsulClient(x => x.Address = new Uri(ConsulConfig.Instance.BaseUrl));
+            consulClient.Agent.ServiceDeregister(service.ID).Wait();
+        });
+    }
+
+    /// <summary>
+    /// 自动依赖注入
+    /// </summary>
+    /// <param name="service"></param>
+    private static void RegisterIBll(IServiceCollection service)
+    {
+        var assemblies = Assembly.GetEntryAssembly()?.GetReferencedAssemblies().Select(Assembly.Load).ToList();
+        assemblies?.ForEach(assembly =>
+        {
+            var list2 = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(y => y == typeof(IBll))).ToList();
+            list2.ForEach(type =>
+            {
+                service.AddScoped(type);
+            });
+        });
+        assemblies?.ForEach(assembly =>
+        {
+            var list2 = assembly.GetTypes().Where(x => x.IsClass && x.GetInterfaces().Any(y => y == typeof(IStaticBll))).ToList();
+            list2.ForEach(type =>
+            {
+                service.AddSingleton(type);
+            });
+        });
+
+
+    }
+
+
+    /// <summary>
+    /// 注入Token
+    /// </summary>
+    /// <param name="service"></param>
+    private void RegisterToken(IServiceCollection service)
+    {
+        service.Configure<TokenConfig>(_configuration.GetSection("TokenConfig"));
+        _configuration.Bind("TokenConfig", TokenConfig.Instance);
+    }
 
 }
