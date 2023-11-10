@@ -1,0 +1,46 @@
+/* 登录页 */
+.loginbody {
+    width: 50vh;
+    height: 30vh;
+    transform: translate(750px, 250px);
+    border-radius: 3%;
+    box-shadow: 12px 12px 2px 1px rgba(1, 1, 247, 0.2);
+    border-style: inset;
+}
+
+body {
+    background-color: rgba(171, 171, 238, 0.2);
+}
+
+
+/* 登录页主体 */
+.loginContent {
+    margin: 10px;
+    padding: 10px;
+}
+
+/* 登录页主体 按钮 */
+.loginContent-button{
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+}
+/* 登录页主体 用户名 */
+.loginContent-account{
+    margin: 10px;
+    padding: 10px;
+}
+
+/* 登录页主体 密码 */
+.loginContent-password{
+    margin: 10px;
+    padding: 10px;
+}
+
+
+/* 登录页文字 */
+.loginTitle {
+    font-size: 30px;
+    text-align: center;
+    padding-top: 5px;
+}
