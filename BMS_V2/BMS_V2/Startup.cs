@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Ys.Tools.Config;
 using Ys.Tools.Interface;
+using Ys.Tools.Exception;
+using Ys.Tools.MiddleWare;
 
 namespace BMS_V2;
 
@@ -95,7 +97,7 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // app.UseMiddleware<JwtVersionMiddleWare>();
+        app.UseMiddleware<ExceptionMiddleWare>();
 
         app.UseEndpoints(x =>
         {

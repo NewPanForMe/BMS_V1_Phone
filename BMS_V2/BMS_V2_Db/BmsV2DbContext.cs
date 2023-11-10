@@ -7,7 +7,7 @@ public class BmsV2DbContext : DbContext
     /// <summary>
     /// 用户
     /// </summary>
-    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<User> User { get; set; } = null!;
 
     public BmsV2DbContext(DbContextOptions<BmsV2DbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
