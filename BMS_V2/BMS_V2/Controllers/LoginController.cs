@@ -26,11 +26,9 @@ namespace BMS_V2.Controllers
         {
             var account = req.GetJsonString("account").HasValueNoNameOrPwd("用户名为空");
             var password = req.GetJsonString("password").HasValueNoNameOrPwd("密码为空");
-            _logger.LogInformation($"用户{account}登录");
+            _logger.LogWarning("用户{0}登录", account);
             return _loginBll.CheckLogin(account, password);
         }
-
-
 
     }
 }

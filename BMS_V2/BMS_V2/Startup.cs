@@ -10,6 +10,7 @@ using Ys.Tools.Config;
 using Ys.Tools.Interface;
 using Ys.Tools.Exception;
 using Ys.Tools.MiddleWare;
+using NLog.Extensions.Logging;
 
 namespace BMS_V2;
 
@@ -65,7 +66,8 @@ public class Startup
         {
             x.MultipartHeadersLengthLimit = 300000000;//文件最大300M
         });
-
+        //注入nlog
+        RegisterNLog(services);
         //注入数据库
         RegisterDb(services);
         //注入项目基本信息
@@ -153,7 +155,17 @@ public class Startup
         _configuration.Bind("ProjectConfig", ProjectConfig.Instance);
     }
 
-
+    /// <summary>
+    /// 配置Nlog
+    /// </summary>
+    /// <param name="service"></param>
+    private static void RegisterNLog(IServiceCollection service)
+    {
+        service.AddLogging(log =>
+        {
+            log.AddNLog("nlog.config");
+        });
+    }
 
     /// <summary>
     /// 获取consulConfig
