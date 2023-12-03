@@ -11,6 +11,7 @@ using Ys.Tools.Interface;
 using Ys.Tools.Exception;
 using Ys.Tools.MiddleWare;
 using NLog.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BMS_V2;
 
@@ -78,7 +79,7 @@ public class Startup
         RegisterIBll(services);
         //注入Token
         RegisterToken(services);
-
+        Console.WriteLine();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -122,25 +123,8 @@ public class Startup
         service.Configure<DbConfig>(_configuration.GetSection("DbConfig"));
         _configuration.Bind("DbConfig", DbConfig.Instance);
         //已经注入，可以直接使用
-        service.AddDbContext<BmsV2DbContext>(opt =>
-        {
-            if (string.IsNullOrWhiteSpace(DbConfig.Instance.SqlType) )
-            {
-                opt.UseSqlServer(DbConfig.Instance.SqlServer);
-            }
-            switch (DbConfig.Instance.SqlType)
-            {
-                case "SqlServer":
-                    opt.UseSqlServer(DbConfig.Instance.SqlServer);
-                    break;
-                case "MySql":
-                    opt.UseMySql(ServerVersion.AutoDetect(DbConfig.Instance.MySql));
-                    break;
-                case "PgSql":
-                    opt.UseNpgsql(DbConfig.Instance.PgSql);
-                    break;
-            }
-        });
+        service.AddEntityFrameworkNpgsql();
+        service.AddNpgsql<BmsV2DbContext>(DbConfig.Instance.PgSql);
     }
 
 

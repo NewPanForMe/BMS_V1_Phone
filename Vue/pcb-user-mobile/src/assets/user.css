@@ -1,0 +1,48 @@
+.loginbox {
+    margin-top: 70px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: solid;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    border-color: gray;
+}
+
+
+.loginBtn {
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+.loginBtn .t-button {
+    width: 70%;
+}
+
+
+.loginText {
+    text-align: center;
+    margin-top: 70px;
+}
+
+.t-form__label {
+    text-align: justify;
+    text-align-last: justify;
+}
+
+
+.bottomText {
+    padding-top: 30%;
+}
+
+.t-link__content {
+    width: 100%;
+    text-align: center;
+}
+
+.t-fab {
+    right: 16px;
+    bottom: 65px;
+}

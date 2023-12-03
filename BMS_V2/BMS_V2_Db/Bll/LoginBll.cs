@@ -1,8 +1,7 @@
 ﻿using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
+using BMS_V2_Db.Models;
 using Microsoft.Extensions.Logging;
 using Ys.Base.Tools.xTool;
-using Ys.Tools.Config;
 using Ys.Tools.Extra;
 using Ys.Tools.Interface;
 using Ys.Tools.MoreTool;
@@ -10,7 +9,7 @@ using Ys.Tools.Response;
 
 namespace BMS_V2_Db.Bll;
 
-public class LoginBll:IBll
+public class LoginBll : IBll
 {
     private readonly BmsV2DbContext _dbContext;
     private readonly ILogger<LoginBll> _logger;
@@ -27,23 +26,58 @@ public class LoginBll:IBll
     /// <param name="account">账号</param>
     /// <param name="password">密码</param>
     /// <returns>ApiResult</returns>
-    public ApiResult CheckLogin(string account,string password)
+    public ApiResult CheckLogin(string account, string password)
     {
-        var user = _dbContext.User.FirstOrDefault(x=>x.Account== account).NotNull($"用户【{account}】不存在");
-        user.IsLock.IsBool($"用户【{account}】已锁定，请联系管理员");
-        user.IsDelete.IsBool($"用户【{account}】不存在，请联系管理员");
+        var user = _dbContext.UserCustomer.FirstOrDefault(x => x.Account == account).NotNull($"用户【{account}】不存在");
         var md532 = Md5Tools.MD5_32(password + user.PasswordSalt);
         if (md532.Equals(user.Password))
         {
             var listClaims = new List<Claim>()
             {
-                new (ClaimTypes.Name,user.UserName ?? user.Account),
+                new (ClaimTypes.Name, user.Account),
                 new (ClaimTypes.NameIdentifier,user.Id.ToString()),
                 new ("UserCode",user.Code),
+                new ("UserType","User"),
             };
             var token = TokenTools.Create(listClaims);
-            return ApiResult.True(new { account,user.UserName, token });
+            return ApiResult.True(new { account, token, });
         }
-        return  ApiResult.False("登录失败，请检查用户名/密码");
+        return ApiResult.False("登录失败，请检查账号/密码");
     }
+
+
+    /// <summary>
+    /// 注册
+    /// </summary>
+    /// <param name="account"></param>
+    /// <param name="password"></param>
+    /// <returns>ApiResult</returns>
+    public async Task<ApiResult> Register(string account, string password)
+    {
+        _dbContext.UserCustomer.Any(x => x.Account == account).IsBool($"用户{account}已存在");
+        var passwordSalt = Guid.NewGuid().ToString();
+        var passMd5 = Md5Tools.MD5_32(password + passwordSalt);
+        var user = new UserCustomer()
+        {
+            Account = account,
+            Password = passMd5,
+            PasswordSalt = passwordSalt,
+            Code = Guid.NewGuid().ToString(),
+        };
+        _dbContext.UserCustomer.Add(user);
+        await _dbContext.SaveChangesAsync();
+
+        var listClaims = new List<Claim>()
+        {
+            new (ClaimTypes.Name, user.Account),
+            new (ClaimTypes.NameIdentifier,user.Id.ToString()),
+            new ("UserCode",user.Code),
+            new ("UserType","User"),
+        };
+        var token = TokenTools.Create(listClaims);
+        return ApiResult.True(new { account, token, });
+    }
+
+
+
 }
