@@ -4,6 +4,7 @@ import router from '../router/index'
 import cookie from "./cookies";
 import { Message } from 'tdesign-mobile-vue';
 
+
 const showMessage = (theme: string, content: string) => {
     if (Message['error']) {
         Message[theme]({
@@ -23,17 +24,13 @@ const showWarning = (content: string) => showMessage('warning', content);
 const showInfo = (content: string) => showMessage('info', content);
 
 
-
 const instance = axios.create({
-    baseURL: "http://localhost:20000/BMSV2Service/",
+    baseURL: "http://127.0.0.1:20000/BMSV2Service/",
     timeout: 10000
 });
 //统一设置post请求头
 instance.defaults.headers.post["Content-Type"] = "application/json";
 instance.defaults.headers.get["Content-Type"] = "application/json";
-
-
-
 
 //添加请求拦截器
 instance.interceptors.request.use(
@@ -60,6 +57,10 @@ instance.interceptors.response.use(
     },
     (error) => {
         showError(error.message)
+        if(error.response.status==401){
+            cookie.removeToken();
+            router.push("/");
+        }
     }
 );
 export default { instance };

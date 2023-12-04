@@ -4,13 +4,14 @@
             <h1>PCB下单系统</h1>
             <h4>欢迎使用</h4>
         </div>
-        <t-form ref="form" :data="formData" @submit="loginBtnClick">
+        <t-form ref="form" :data="formData" @submit="loginBtnClick" :rules="rules">
             <div class="loginbox">
                 <t-form-item label="账户名" name="account" for="account">
                     <t-input v-model="formData.account" borderless placeholder="账户名"></t-input>
                 </t-form-item>
                 <t-form-item label="密码" name="password" for="password">
-                    <t-input v-model="formData.password" borderless type="password" :clearable="false" placeholder="请输入密码">
+                    <t-input v-model="formData.password" borderless type="password" :clearable="false" placeholder="请输入密码"
+                        @keyup.enter="preSubmit">
                     </t-input>
                 </t-form-item>
             </div>
@@ -43,30 +44,34 @@ let formData = reactive({
 })
 
 
+const rules = {
+    account: [{ validator: (val: any) => val !== "", message: '账号不能为空' }],
+    password: [{ validator: (val: any) => val !== "", message: '密码不能为空' }],
+};
+
 //登录按钮点击事件
-const loginBtnClick = (e) => {
-    e.preventDefault();
-    // if (formData.account == "" || formData.password == "") {
-    //     Utils.showWarning('账号/密码为空，请检查后重试');
-    //     return;
-    // }
-    // instance.instance.post(Api.CustomerLogin.Login, formData).then(resp => {
-    //     if (!resp.success) {
-    //         Utils.showError(resp.result);
-    //         return;
-    //     }
-    //     else {
-             Utils.showSuccess('登录成功，正在跳转.....');
-    //         Cookies.saveToken(resp.result)
-    setTimeout(jumpToHome, 2000)
-    //     }
-    // })
+const loginBtnClick = (e: any) => {
+    console.log(e)
+    if (e.validateResult==true) {
+        instance.instance.post(Api.CustomerLogin.Login, formData).then(resp => {
+            if (!resp.success) {
+                Utils.showError(resp.result);
+                return;
+            }
+            else {
+                Utils.showSuccess('登录成功，正在跳转.....');
+                Cookies.saveToken(resp.result)
+                setTimeout(jumpToHome, 2000)
+            }
+        })
+    }
+
 }
 
-const jumpToHome = () => { Router.push('/home') }
-const register = () => { Router.push('/register') }
+const jumpToHome = () => {   setTimeout(Router.push('/order'), 2000)  }
+const register = () => {      setTimeout( Router.push('/register'), 2000) }
 
-
-
-
+const preSubmit = (e: any) => {
+    console.log(e)
+}
 </script>

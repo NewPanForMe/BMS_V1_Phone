@@ -5,6 +5,7 @@ const api={
     },
     PcbOrder:{
         Add:"/PcbOrder/Add",
+        OrderList:"/PcbOrder/OrderList",
     }
 }
 export default api;

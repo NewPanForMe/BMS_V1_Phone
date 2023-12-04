@@ -3,7 +3,7 @@
         <div class="loginText">
             <h4>欢迎注册</h4>
         </div>
-        <t-form ref="form" :data="formData" @submit="loginBtnClick">
+        <t-form ref="form" :data="formData" @submit="loginBtnClick"  :rules="rules">
             <div class="loginbox">
                 <t-form-item label="账户名" name="account" for="account">
                     <t-input v-model="formData.account" borderless placeholder="账户名"></t-input>
@@ -46,18 +46,20 @@ let formData = reactive({
     passwordTwo: ""
 })
 
+const rules = {
+    account: [{ validator: (val: any) => val !== "", message: '账号不能为空' }],
+    password: [{ validator: (val: any) => val !== "", message: '密码不能为空' }],
+    passwordTwo: [{ validator: (val: any) => val !== "", message: '密码不能为空' }],
+};
 
 //登录按钮点击事件
 const loginBtnClick = (e) => {
-    e.preventDefault();
-    if (formData.account == "" || formData.password == "" || formData.passwordTwo == "") {
-        Utils.showWarning('账号/密码为空，请检查后重试');
-        return;
-    }
     if (formData.password != formData.passwordTwo) {
         Utils.showWarning('两次密码输入不一致');
         return;
     }
+
+    if (e.validateResult==true) {
     instance.instance.post(Api.CustomerLogin.Register, formData).then(resp => {
         if (!resp.success) {
             Utils.showError(resp.result);
@@ -69,6 +71,7 @@ const loginBtnClick = (e) => {
             setTimeout(jumpToHome, 2000)
         }
     })
+}
 }
 
 const jumpToHome = () => { Router.push('/home') }

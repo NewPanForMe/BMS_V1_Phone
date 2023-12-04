@@ -1,6 +1,7 @@
 import { Message } from 'tdesign-mobile-vue';
 
 const showMessage = (theme: string, content: string) => {
+  if(  Message[theme]){
     Message[theme]({
       offset: [10, 16],
       content,
@@ -9,6 +10,8 @@ const showMessage = (theme: string, content: string) => {
       zIndex: 20000,
       context: document.querySelector('.button-demo'),
     });
+  }
+
 };
 
 //获取当前日期

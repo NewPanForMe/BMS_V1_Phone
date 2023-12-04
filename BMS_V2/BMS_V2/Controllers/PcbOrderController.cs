@@ -53,5 +53,10 @@ namespace BMS_V2.Controllers
         }
 
 
+        [HttpGet]
+        public  ApiResult OrderList()
+        {
+            return  _pcbBll.OrderList(CurrentUser.Name,"");
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using BMS_V2_Db.Enum;
+﻿using System.Data.Entity;
+using BMS_V2_Db.Enum;
 using BMS_V2_Db.Models;
 using Microsoft.Extensions.Logging;
 using Ys.Tools.Extra;
@@ -100,5 +101,35 @@ public class PcbOrderBll : IBll
         _dbContext.OrderRefuse.Add(refuse);
         await _dbContext.SaveChangesAsync();
         return ApiResult.True("订单已拒绝");
+    }
+
+
+
+    /// <summary>
+    /// 获得列表
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="status"></param>
+    /// <returns></returns>
+    public  ApiResult OrderList(string user,string status)
+    {
+        List<PcbOrder> list;
+
+        try
+        {
+            list =  _dbContext.PcbOrder.AsNoTracking().Where(x => x.CreateUser == user).ToList();
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                list = list.Where(x => x.OrderStatus == status).ToList();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+
+        return  ApiResult.True(new {list,list.Count});
     }
 }

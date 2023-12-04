@@ -65,3 +65,30 @@
 .header{
    
 }
+.t-fab{
+    bottom:65px !important;
+}
+
+.button-danger{
+    color: red;
+}
+.orderlist {
+    border: solid;
+    height: 5vh;
+    margin-top: 3px;
+}
+
+.orderlist:hover {
+   background-color: gray;
+}
+
+
+.orderlist .orderlistTag{
+        margin-top: 1vh;
+        margin-right: 1vh;
+        float: right;
+}
+
+.orderlist .orderlistTitle{
+    float: left;
+}

@@ -4,14 +4,11 @@ using BMS_V2_Db;
 using Consul;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Ys.Tools.Config;
 using Ys.Tools.Interface;
-using Ys.Tools.Exception;
 using Ys.Tools.MiddleWare;
 using NLog.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace BMS_V2;
 

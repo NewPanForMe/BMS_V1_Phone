@@ -1,5 +1,6 @@
 <template>
-    <t-form ref="form" :data="formData" :rules="rules" @submit="submitBtnClick" >
+    <div class=""></div>
+    <t-form ref="form" :data="formData" :rules="rules" @submit="submitBtnClick">
         <t-form-item label="标题" name="title" for="title" help="简要描述需求">
             <t-input v-model="formData.title" aria-required="true" borderless placeholder="标题"></t-input>
         </t-form-item>
@@ -13,17 +14,19 @@
             <t-date-time-picker :value="pickerValue" :mode="['date']" title="选择日期" :start="getCurrentDate()"
                 format="YYYY-MM-DD" @confirm="onConfirm" />
         </t-popup>
-        <div class="order-add-btn">
+        <div class="order-add-btn button-demo">
             <t-button size="large" theme="primary" type="submit">提交</t-button>
         </div>
     </t-form>
 </template>
 <script setup lang="ts">
 import { reactive, ref, inject } from 'vue'
-const Router = inject("$Router")
+const instance = inject("$instance")
 const Utils = inject("$Utils")
 const Api = inject("$Api")
-const instance = inject("$instance")
+const Cookies = inject("$Cookies")
+const Router = inject("$Router")
+
 
 
 const formData = reactive({
@@ -51,17 +54,16 @@ const rules = {
 };
 
 const submitBtnClick = (e: any) => {
-
-    instance.instance.post(Api.PcbOrder.Add, formData).then(resp => {
-        console.log(resp)
-
-
-
-    })
-
-
-
+    if (e.validateResult == true) {
+        instance.instance.post(Api.PcbOrder.Add, formData).then(resp => {
+            if (resp.success) {
+                Utils.showSuccess('提交成功');
+                setTimeout(order, 2000)
+                return;
+            }
+        })
+    }
 }
-
+const order = () => { Router.push('/order') }
 
 </script>
