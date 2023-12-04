@@ -34,10 +34,6 @@ public record PcbOrder
     /// </summary>  
     public string RealFinishTime { get; set; } = string.Empty;
     /// <summary>  
-    /// 工程师备注 
-    /// </summary>  
-    public string Remark { get; set; } = string.Empty;
-    /// <summary>  
     /// 订单创建时间 
     /// </summary>  
     public string CreateDateTime { get; set; } = string.Empty;
@@ -45,6 +41,10 @@ public record PcbOrder
     /// 订单创建人 
     /// </summary>  
     public string CreateUser { get; set; } = string.Empty;
+    /// <summary>  
+    /// 工程师备注 
+    /// </summary>  
+    public string Remark { get; set; } = string.Empty;
     /// <summary>  
     /// 接单工程师 
     /// </summary>  
@@ -57,10 +57,12 @@ public record PcbOrder
     /// 订单状态
     /// 0-未接单
     /// 1-已接单
-    /// 2-已完成，待发送快递
-    /// 3-快递已发出
-    /// 4-订单完成
-    /// -1 -订单拒绝 
+    /// 2-已估价
+    /// 3-确认接单
+    /// 4-已完成，待发送快递
+    /// 5-快递已发出
+    /// 6-订单完成
+    /// -1 -订单拒绝
     /// </summary>  
     public string OrderStatus { get; set; } = string.Empty;
 

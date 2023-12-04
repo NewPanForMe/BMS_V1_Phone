@@ -3,7 +3,9 @@ using BMS_V2_Db.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 using Ys.Tools.Controllers;
+using Ys.Tools.Extra;
 using Ys.Tools.Models;
 using Ys.Tools.Response;
 
@@ -43,6 +45,13 @@ namespace BMS_V2.Controllers
         }
 
 
-        
+        [HttpPost]
+        public async Task<ApiResult> Refuse(JsonElement req)
+        {
+            var code = req.GetJsonString("Code").NotNull("编号为空");
+            return await _pcbBll.Refuse(code);
+        }
+
+
     }
 }

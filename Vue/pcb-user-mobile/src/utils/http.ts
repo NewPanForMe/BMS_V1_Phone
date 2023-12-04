@@ -31,6 +31,10 @@ const instance = axios.create({
 //统一设置post请求头
 instance.defaults.headers.post["Content-Type"] = "application/json";
 instance.defaults.headers.get["Content-Type"] = "application/json";
+
+
+
+
 //添加请求拦截器
 instance.interceptors.request.use(
     (config) => {

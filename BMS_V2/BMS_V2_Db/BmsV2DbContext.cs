@@ -20,6 +20,10 @@ public class BmsV2DbContext : DbContext
     /// Pcb订单
     /// </summary>
     public DbSet<PcbOrder> PcbOrder { get; set; } = null!;
+    /// <summary>
+    /// 订单拒绝
+    /// </summary>
+    public DbSet<OrderRefuse> OrderRefuse { get; set; } = null!;
 
     public BmsV2DbContext(DbContextOptions<BmsV2DbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
