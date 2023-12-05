@@ -35,7 +35,7 @@ namespace BMS_V2.Controllers
         [HttpPost]
         public  ApiResult ReceiveOrder(PcbOrder pcbOrder)
         {
-            return  _pcbBll.ReceiveOrder(pcbOrder, CurrentUser.Name);
+            return  _pcbBll.ReceiveOrder(pcbOrder, CurrentUser.Code,CurrentUser.Name);
         }
 
         [HttpPost]
@@ -52,11 +52,34 @@ namespace BMS_V2.Controllers
             return await _pcbBll.Refuse(code);
         }
 
-
-        [HttpGet]
-        public  ApiResult OrderList()
+        [HttpPost]
+        public  ApiResult OrderList(JsonElement req)
         {
-            return  _pcbBll.OrderList(CurrentUser.Name,"");
+            var status = req.GetJsonString("status");
+            return  _pcbBll.OrderList(CurrentUser.Name, status??"");
         }
+
+        [HttpPost]
+        public ApiResult Order(JsonElement req)
+        {
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            return _pcbBll.Order(code);
+        }
+
+
+        [HttpPost]
+        public ApiResult Cancel(JsonElement req)
+        {
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            return _pcbBll.Cancel(code);
+        }
+
+        [HttpPost]
+        public ApiResult Confirm(JsonElement req)
+        {
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            return _pcbBll.Confirm(code);
+        }
+
     }
 }

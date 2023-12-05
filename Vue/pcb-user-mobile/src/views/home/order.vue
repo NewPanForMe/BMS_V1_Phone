@@ -1,95 +1,120 @@
 <template>
-    <div>
-        <baseList :list="list" />
-    </div>
-    <t-table
-      row-key="index"
-      :data="data"
-      :columns="columns"
-      :show-header="showHeader"
-      cell-empty-content="-"
-      @row-click="handleRowClick"
-      @cell-click="handleCellClick"
-    ></t-table>
-    <t-fab :icon="iconFunc" @click="onAddClick" />
+  <t-dropdown-menu>
+    <t-dropdown-item label="订单状态" :options="product.options" :value="product.value" @change="onChange" />
+  </t-dropdown-menu>
+
+
+  <t-table row-key="index" :data="list" :columns="columns" :show-header="true" cell-empty-content="-"
+    @row-click="handleRowClick" @cell-click="handleCellClick">
+    <template #status="{ col, row }">
+      {{ row[col.colKey].orderStatus }}
+    </template>
+  </t-table>
+  <t-fab :icon="iconFunc" @click="onAddClick" />
 </template>
 
   
 <script  setup>
 import { AddIcon } from 'tdesign-icons-vue-next';
 
-import baseList from '@/component/baseList.vue'
-import { h, ref, reactive, inject, onMounted } from 'vue';
+import { h, ref, onBeforeMount, inject, onMounted } from 'vue';
 const route = inject("$Router")
 const instance = inject("$instance")
 const api = inject("$Api")
+
+
 const iconFunc = () => h(AddIcon, { size: '24px' });
-let list = [];
-
-
-
+let list = ref([]);
 
 const status = ref(" ")
 
 const onAddClick = () => {
-    route.push("/orderadd");
-
+  route.push("/orderadd");
 };
 
-const detailClick = (code) => {
-    console.log(code)
-};
 
 const loadData = () => {
-    instance.instance.get(api.PcbOrder.OrderList + "?status=" + status.value).then(resp => {
-        for (let index = 0; index < resp.result.count; index++) {
-            list.push(resp.result.list[index])
-        }
-    })
-    console.log(list)
+  let param = { status: status.value }
+  list.value.length=0;
+  instance.instance.post(api.PcbOrder.OrderList, param).then(resp => {
+    for (let index = 0; index < resp.result.count; index++) {
+      list.value.push(resp.result.list[index])
+    }
+  })
 };
 
 
-onMounted(()=>{
-    loadData()
+onBeforeMount(()=>{
+  loadData()
 })
 
-
-
-
-const data= [];
-const total = 10;
-for (let i = 0; i < total; i++) {
-  data.push({
-    index: i + 1,
-    applicant: ['内容', '内容', '内容'][i % 3],
-    status: ['内容', '内容', '内容'][i % 3],
-    channel: ['内容', '内容', '内容'][i % 3],
-    detail: {
-      email: ['内容', '内容', '内容内容内容'][i % 3],
-    },
-  });
-}
-
-const bordered = ref(true);
-const showHeader = ref(true);
-
 const columns = ref([
-  { colKey: 'applicant', title: '标题', ellipsis: true },
+  { colKey: 'title', title: '标题', ellipsis: true },
+  { colKey: 'orderStatus', title: '订单状态', ellipsis: true },
   {
-    colKey: 'status',
-    title: '标题',
+    colKey: 'createDateTime',
+    title: '创建时间',
     ellipsis: true,
   },
 ]);
 
 const handleRowClick = (e) => {
-  console.log('row-click=====', e);
+  let code = e.row.code
+  route.push({ path: "/orderdetail", query: { code: code } })
 };
 
 const handleCellClick = (e) => {
-  console.log('cell-click=====', e);
 };
+
+const product = {
+  value: 'all',
+  options: [
+    {
+      value: '',
+      label: '全部',
+    },
+    {
+      value: '未接单',
+      label: '未接单',
+    },
+    {
+      value: '已接单',
+      label: '已接单',
+    },
+    {
+      value: '已估价',
+      label: '已估价',
+    },
+    {
+      value: '确认订单',
+      label: '确认订单',
+    },
+    {
+      value: '已完成，待发送快递',
+      label: '已完成，待发送快递',
+    },
+    {
+      value: '快递已发出',
+      label: '快递已发出',
+    },
+    {
+      value: '订单完成',
+      label: '订单完成',
+    },
+    {
+      value: '订单拒绝',
+      label: '订单拒绝',
+    },
+    {
+      value: '订单作废',
+      label: '订单作废',
+    },
+  ],
+};
+function onChange(e) {
+  status.value = e;
+  loadData();
+}
 
 
 </script>

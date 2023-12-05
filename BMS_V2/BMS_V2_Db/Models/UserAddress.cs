@@ -1,9 +1,10 @@
 namespace BMS_V2_Db.Models;
 
 /// <summary>
-/// 工程师表
+/// 用户地址表
+/// 用于确认客户的邮寄地址
 /// </summary>
-public record UserEngineer
+public record UserAddress
 {
     /// <summary>  
     /// 序号i 
@@ -14,24 +15,20 @@ public record UserEngineer
     /// </summary>  
     public string Code { get; set; } = string.Empty;
     /// <summary>  
-    /// 账号 
+    /// 对应用户编号 
     /// </summary>  
-    public string Account { get; set; } = string.Empty;
+    public string UserCode { get; set; } = string.Empty;
     /// <summary>  
-    /// 密码 
+    /// 手机号 
     /// </summary>  
-    public string Password { get; set; } = string.Empty;
-    /// <summary>  
-    /// 密码盐 
-    /// </summary>  
-    public string PasswordSalt { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
     /// <summary>  
     /// 姓名 
     /// </summary>  
     public string Name { get; set; } = string.Empty;
     /// <summary>  
-    /// 手机号 
+    /// 地址信息 
     /// </summary>  
-    public string Phone { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
 
 }

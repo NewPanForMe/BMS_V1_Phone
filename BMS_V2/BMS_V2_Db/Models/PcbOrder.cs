@@ -48,6 +48,10 @@ public record PcbOrder
     /// <summary>  
     /// 接单工程师 
     /// </summary>  
+    public string AcceptEngineerCode { get; set; } = string.Empty;
+    /// <summary>  
+    /// 接单工程师名称 
+    /// </summary>  
     public string AcceptEngineer { get; set; } = string.Empty;
     /// <summary>  
     /// 接单时间 
@@ -55,14 +59,6 @@ public record PcbOrder
     public string AcceptDateTime { get; set; } = string.Empty;
     /// <summary>  
     /// 订单状态
-    /// 0-未接单
-    /// 1-已接单
-    /// 2-已估价
-    /// 3-确认接单
-    /// 4-已完成，待发送快递
-    /// 5-快递已发出
-    /// 6-订单完成
-    /// -1 -订单拒绝
     /// </summary>  
     public string OrderStatus { get; set; } = string.Empty;
 

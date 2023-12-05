@@ -5,7 +5,7 @@ import router from './router/index'
 import mobile from 'tdesign-mobile-vue'
 import instance from './utils/http'
 import cookies from './utils/cookies'
-import utils from './utils/message'
+import utils from './utils/utils'
 import api from './api/api'
 
 const app = createApp(App)
@@ -13,7 +13,6 @@ const app = createApp(App)
 app.use(router)
 app.use(mobile)
 app.use(instance)
-
 
 app.provide('$instance', instance)
 app.provide('$Utils', utils)

@@ -25,6 +25,11 @@ public class BmsV2DbContext : DbContext
     /// </summary>
     public DbSet<OrderRefuse> OrderRefuse { get; set; } = null!;
 
+    /// <summary>
+    /// 用户地址
+    /// </summary>
+    public DbSet<UserAddress> UserAddress { get; set; } = null!;
+
     public BmsV2DbContext(DbContextOptions<BmsV2DbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

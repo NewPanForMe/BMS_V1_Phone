@@ -4,22 +4,22 @@
         <t-form-item label="标题" name="title" for="title" help="简要描述需求">
             <t-input v-model="formData.title" aria-required="true" borderless placeholder="标题"></t-input>
         </t-form-item>
-        <t-form-item label="需求信息" name="comment" for="comment" help="（详细描述需求，描述的越清晰，工程师做的越准确哦~）">
+        <t-form-item label="需求信息" name="comment" for="comment" help="需求描述的越清晰，工程师做的越准确">
             <t-textarea v-model="formData.comment" name="需求信息" placeholder="请输入文字" autosize />
         </t-form-item>
-        <t-form-item label="预计完成时间" name="finishTime" for="finishTime" help="（时间别太短哦~）">
+        <t-form-item label="预计完成时间" name="finishTime" for="finishTime" >
             <t-cell title="" :note="pickerValueText || '点击选择'" @click="visible = true" />
         </t-form-item>
         <t-popup v-model="visible" placement="bottom">
             <t-date-time-picker :value="pickerValue" :mode="['date']" title="选择日期" :start="getCurrentDate()"
                 format="YYYY-MM-DD" @confirm="onConfirm" />
         </t-popup>
-        <div class="order-add-btn button-demo">
+        <div class="order-add-btn  button-demo">
             <t-button size="large" theme="primary" type="submit">提交</t-button>
         </div>
     </t-form>
 </template>
-<script setup lang="ts">
+<script setup  >
 import { reactive, ref, inject } from 'vue'
 const instance = inject("$instance")
 const Utils = inject("$Utils")
@@ -39,7 +39,7 @@ const getCurrentDate = () => Utils.getCurrentDate()
 const visible = ref(false);
 const pickerValue = ref('')
 const pickerValueText = ref('');
-const onConfirm = (value: string) => {
+const onConfirm = (value) => {
     formData.finishTime = value;
     console.log('confirm: ', value);
     pickerValue.value = value;
@@ -48,12 +48,12 @@ const onConfirm = (value: string) => {
 };
 
 const rules = {
-    title: [{ validator: (val: any) => val !== "", message: '请填写标题' }],
-    comment: [{ validator: (val: any) => val !== "", message: '请填写需求' }],
-    finishTime: [{ validator: (val: any) => val !== "", message: '请选择预计完成时间' }],
+    title: [{ validator: (val) => val !== "", message: '请填写标题' }],
+    comment: [{ validator: (val) => val !== "", message: '请填写需求' }],
+    finishTime: [{ validator: (val) => val !== "", message: '请选择预计完成时间' }],
 };
 
-const submitBtnClick = (e: any) => {
+const submitBtnClick = (e) => {
     if (e.validateResult == true) {
         instance.instance.post(Api.PcbOrder.Add, formData).then(resp => {
             if (resp.success) {

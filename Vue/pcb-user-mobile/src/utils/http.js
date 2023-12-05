@@ -5,27 +5,27 @@ import cookie from "./cookies";
 import { Message } from 'tdesign-mobile-vue';
 
 
-const showMessage = (theme: string, content: string) => {
+const showMessage = (theme, content) => {
     if (Message['error']) {
         Message[theme]({
             offset: [10, 16],
             content,
-            duration: 5000,
+            duration: 3000,
             icon: true,
             zIndex: 20000,
-            context: document.querySelector('.button-demo'),
+            context: document.querySelector('.showMessage'),
         });
     }
 };
 
-const showSuccess = (content: string) => showMessage('success', content);
-const showError = (content: string) => showMessage('error', content);
-const showWarning = (content: string) => showMessage('warning', content);
-const showInfo = (content: string) => showMessage('info', content);
+const showSuccess = (content) => showMessage('success', content);
+const showError = (content) => showMessage('error', content);
+const showWarning = (content) => showMessage('warning', content);
+const showInfo = (content) => showMessage('info', content);
 
 
 const instance = axios.create({
-    baseURL: "http://127.0.0.1:20000/BMSV2Service/",
+    baseURL: window.server.baseDevUrl,
     timeout: 10000
 });
 //统一设置post请求头
@@ -56,11 +56,12 @@ instance.interceptors.response.use(
         }
     },
     (error) => {
-        showError(error.message)
         if(error.response.status==401){
+            showError("无权限，请重新登录")
             cookie.removeToken();
-            router.push("/");
+            router.push({path:"/login"});
         }
+        return Promise.reject(error);
     }
 );
 export default { instance };

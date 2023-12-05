@@ -11,7 +11,7 @@
                 </t-form-item>
                 <t-form-item label="密码" name="password" for="password">
                     <t-input v-model="formData.password" borderless type="password" :clearable="false" placeholder="请输入密码"
-                        @keyup.enter="preSubmit">
+                        >
                     </t-input>
                 </t-form-item>
             </div>
@@ -20,12 +20,12 @@
             </div>
         </t-form>
         <div class="bottomText">
-            <t-link theme="primary" @click="register">没有账号吗？先注册吧</t-link>
+            <t-link theme="primary" @click="register">没有账号？快来注册</t-link>
         </div>
     </div>
 </template>
 
-<script  lang="ts" setup>
+<script    setup>
 import { ref, reactive, inject } from 'vue'
 const instance = inject("$instance")
 const Utils = inject("$Utils")
@@ -45,13 +45,12 @@ let formData = reactive({
 
 
 const rules = {
-    account: [{ validator: (val: any) => val !== "", message: '账号不能为空' }],
-    password: [{ validator: (val: any) => val !== "", message: '密码不能为空' }],
+    account: [{ validator: (val) => val !== "", message: '账户名不能为空' }],
+    password: [{ validator: (val) => val !== "", message: '密码不能为空' }],
 };
 
 //登录按钮点击事件
-const loginBtnClick = (e: any) => {
-    console.log(e)
+const loginBtnClick = (e) => {
     if (e.validateResult==true) {
         instance.instance.post(Api.CustomerLogin.Login, formData).then(resp => {
             if (!resp.success) {
@@ -71,7 +70,5 @@ const loginBtnClick = (e: any) => {
 const jumpToHome = () => {   setTimeout(Router.push('/order'), 2000)  }
 const register = () => {      setTimeout( Router.push('/register'), 2000) }
 
-const preSubmit = (e: any) => {
-    console.log(e)
-}
+
 </script>

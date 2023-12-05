@@ -17,10 +17,10 @@
     </div>
 </template>
   
-<script setup lang="ts">
+<script setup >
 import { ref, watch, inject } from 'vue';
 import { Icon as TIcon } from 'tdesign-icons-vue-next';
-const Router = inject("$Router")
+const router = inject("$Router")
 import { RouterLink, RouterView } from 'vue-router'
 const value = ref('home');
 const list = ref([
@@ -28,11 +28,11 @@ const list = ref([
     { value: '/my', label: '我的', icon: 'user' },
 ]);
 
-const change = (changeValue: string) => {
-    Router.push(changeValue)
+const change = (changeValue) => {
+    router.push(changeValue)
 };
 //进来自动跳转
-const order = () => { Router.push('/order') }
+const order = () => { router.push('/order') }
 setTimeout(order, 200)
 
 

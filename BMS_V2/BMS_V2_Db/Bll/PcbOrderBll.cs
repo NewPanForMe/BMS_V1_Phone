@@ -43,12 +43,14 @@ public class PcbOrderBll : IBll
     /// </summary>
     /// <param name="pcbOrder"></param>
     /// <param name="userCode"></param>
+    /// <param name="userName"></param>
     /// <returns></returns>
-    public ApiResult ReceiveOrder(PcbOrder pcbOrder, string userCode)
+    public ApiResult ReceiveOrder(PcbOrder pcbOrder, string userCode,string userName)
     {
         var pcbOrderDb = _dbContext.PcbOrder.FirstOrDefault(x => x.Code == pcbOrder.Code).NotNull($"ReceiveOrder【{pcbOrder.Code}】未查询到数据");
         pcbOrderDb.AcceptDateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-        pcbOrderDb.AcceptEngineer = userCode;
+        pcbOrderDb.AcceptEngineer = userName;
+        pcbOrderDb.AcceptEngineerCode = userCode;
         pcbOrderDb.OrderStatus = OrderStatus.已接单.ToString();
         _dbContext.SaveChanges();
         return ApiResult.True("接单成功");
@@ -104,6 +106,33 @@ public class PcbOrderBll : IBll
     }
 
 
+    /// <summary>
+    /// 作废订单
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    public ApiResult Cancel(string code)
+    {
+        var pcbOrderDb = _dbContext.PcbOrder.FirstOrDefault(x => x.Code == code).NotNull($"Cancel【{code}】未查询到数据");
+        if(pcbOrderDb.OrderStatus==OrderStatus.订单作废.ToString()) return ApiResult.False("订单已作废，无需再次作废");
+        pcbOrderDb.OrderStatus = OrderStatus.订单作废.ToString();
+        _dbContext.SaveChanges();
+        return ApiResult.True("作废成功");
+    }
+
+
+    /// <summary>
+    /// 确认订单
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    public ApiResult Confirm(string code)
+    {
+        var pcbOrderDb = _dbContext.PcbOrder.FirstOrDefault(x => x.Code == code).NotNull($"Cancel【{code}】未查询到数据");
+        pcbOrderDb.OrderStatus = OrderStatus.确认接单.ToString();
+        _dbContext.SaveChanges();
+        return ApiResult.True("确认成功");
+    }
 
     /// <summary>
     /// 获得列表
@@ -111,25 +140,24 @@ public class PcbOrderBll : IBll
     /// <param name="user"></param>
     /// <param name="status"></param>
     /// <returns></returns>
-    public  ApiResult OrderList(string user,string status)
+    public ApiResult OrderList(string user, string status)
     {
-        List<PcbOrder> list;
-
-        try
+        List<PcbOrder> list = _dbContext.PcbOrder.AsNoTracking().Where(x => x.CreateUser == user).OrderByDescending(x=>x.CreateDateTime).ToList();
+        if (!string.IsNullOrWhiteSpace(status))
         {
-            list =  _dbContext.PcbOrder.AsNoTracking().Where(x => x.CreateUser == user).ToList();
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                list = list.Where(x => x.OrderStatus == status).ToList();
-            }
+            list = list.Where(x => x.OrderStatus == status).ToList();
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+        return ApiResult.True(new { list, list.Count });
+    }
 
-
-        return  ApiResult.True(new {list,list.Count});
+    /// <summary>
+    /// 获得单挑
+    /// </summary>
+    /// <param name="code"></param>
+    /// <returns></returns>
+    public ApiResult Order(string code)
+    {
+        var pcbOrder  = _dbContext.PcbOrder.AsNoTracking(). FirstOrDefault(x => x.Code == code).NotNull($"Order【{code}】未查询到数据"); ;
+        return ApiResult.True(new { pcbOrder });
     }
 }

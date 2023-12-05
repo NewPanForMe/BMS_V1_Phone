@@ -92,3 +92,11 @@
 .orderlist .orderlistTitle{
     float: left;
 }
+.addressBtn{
+    padding: 1vh;
+}
+
+.tipText{
+    font-size: 11px;
+    text-align: center;
+}
