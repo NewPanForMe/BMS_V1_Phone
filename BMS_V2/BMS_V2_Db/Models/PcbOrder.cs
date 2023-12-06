@@ -59,7 +59,20 @@ public record PcbOrder
     public string AcceptDateTime { get; set; } = string.Empty;
     /// <summary>  
     /// 订单状态
+    /// 0-未接单
+    /// 1-已接单
+    /// 2-已估价
+    /// 3-确认订单
+    /// 4-已完成，待发送快递
+    /// 5-快递已发出
+    /// 6-订单完成
+    /// -1 -订单拒绝
+    /// -2 -订单作废 
     /// </summary>  
     public string OrderStatus { get; set; } = string.Empty;
+    /// <summary>  
+    /// 物流单号 
+    /// </summary>  
+    public string FollowNum { get; set; } = string.Empty;
 
 }

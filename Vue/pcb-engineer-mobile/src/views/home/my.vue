@@ -1,6 +1,6 @@
 <template>
     <t-cell-group bordered>
-        <t-cell title="地址信息" arrow hover  @click="addressClick"/>
+        <!-- <t-cell title="地址信息" arrow hover  @click="addressClick"/> -->
         <t-cell title="退出登录" arrow hover  @click="logout"/>
     </t-cell-group>
 </template>
@@ -13,11 +13,9 @@ const Cookies = inject("$Cookies")
 const Router = inject("$Router")
 
 
-const addressClick=()=>{
-    Router.push("/address")
-}
 const logout=()=>{
       Cookies.removeToken();
     Router.push("/login")
 }
+
 </script>

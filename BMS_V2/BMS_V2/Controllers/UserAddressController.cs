@@ -31,16 +31,25 @@ namespace BMS_V2.Controllers
         [HttpPost]
         public async Task<ApiResult> Add(UserAddress address)
         {
-            return await _addressBll.Add(address, CurrentUser.Code);
+            return await _addressBll.Add(address, CurrentUser.Name);
         }
+
+
 
         [HttpPost]
         public ApiResult UserAddressList()
         {
-            return _addressBll.UserAddressList(CurrentUser.Code);
+            return _addressBll.UserAddressList(CurrentUser.Name);
         }
 
 
 
+        [HttpPost]
+        public ApiResult UserAddressByUserCode(JsonElement req)
+        {
+            var userCode = req.GetJsonString("userCode").HasValue("编号为空");
+            return _addressBll.UserAddressByUserCode(userCode);
+        }
+        
     }
 }

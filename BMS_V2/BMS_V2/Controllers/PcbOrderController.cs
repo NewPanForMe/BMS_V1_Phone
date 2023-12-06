@@ -33,9 +33,10 @@ namespace BMS_V2.Controllers
 
 
         [HttpPost]
-        public  ApiResult ReceiveOrder(PcbOrder pcbOrder)
+        public  ApiResult ReceiveOrder(JsonElement req)
         {
-            return  _pcbBll.ReceiveOrder(pcbOrder, CurrentUser.Code,CurrentUser.Name);
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            return  _pcbBll.ReceiveOrder(code, CurrentUser.Code,CurrentUser.Name);
         }
 
         [HttpPost]
@@ -48,24 +49,11 @@ namespace BMS_V2.Controllers
         [HttpPost]
         public async Task<ApiResult> Refuse(JsonElement req)
         {
-            var code = req.GetJsonString("Code").NotNull("编号为空");
+            var code = req.GetJsonString("code").NotNull("编号为空");
             return await _pcbBll.Refuse(code);
         }
 
-        [HttpPost]
-        public  ApiResult OrderList(JsonElement req)
-        {
-            var status = req.GetJsonString("status");
-            return  _pcbBll.OrderList(CurrentUser.Name, status??"");
-        }
-
-        [HttpPost]
-        public ApiResult Order(JsonElement req)
-        {
-            var code = req.GetJsonString("code").HasValue("编号为空");
-            return _pcbBll.Order(code);
-        }
-
+ 
 
         [HttpPost]
         public ApiResult Cancel(JsonElement req)
@@ -75,10 +63,49 @@ namespace BMS_V2.Controllers
         }
 
         [HttpPost]
+        public ApiResult Finish(JsonElement req)
+        {
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            return _pcbBll.Finish(code);
+        }
+
+
+        [HttpPost]
         public ApiResult Confirm(JsonElement req)
         {
             var code = req.GetJsonString("code").HasValue("编号为空");
             return _pcbBll.Confirm(code);
+        }
+
+        [HttpPost]
+        public ApiResult Follow(PcbOrder pcbOrder)
+        {
+            return _pcbBll.Follow(pcbOrder);
+        }
+
+
+        [HttpPost]
+        public ApiResult OrderList(JsonElement req)
+        {
+            var status = req.GetJsonString("status");
+            return _pcbBll.OrderList(CurrentUser.Name, status ?? "");
+        }
+
+
+
+
+        [HttpPost]
+        public ApiResult EngineerOrderList(JsonElement req)
+        {
+            var status = req.GetJsonString("status");
+            return _pcbBll.EngineerOrderList( status ?? "",CurrentUser.Code);
+        }
+
+        [HttpPost]
+        public ApiResult Order(JsonElement req)
+        {
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            return _pcbBll.Order(code);
         }
 
     }

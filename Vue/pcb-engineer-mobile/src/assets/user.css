@@ -1,0 +1,107 @@
+.loginbox {
+    margin-top: 70px;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-radius: 5px;
+    border: solid;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    border-color: gray;
+}
+
+
+.loginBtn {
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+.loginBtn .t-button {
+    width: 70%;
+}
+
+
+.loginText {
+    text-align: center;
+    margin-top: 70px;
+}
+
+.t-form__label {
+    text-align: justify;
+    text-align-last: justify;
+}
+
+
+.bottomText {
+    padding-top: 30%;
+}
+
+.t-link__content {
+    width: 100%;
+    text-align: center;
+}
+
+.t-fab {
+    right: 16px;
+    bottom: 65px;
+}
+
+
+.order-add-btn{
+    text-align: center;
+    position: absolute;
+    bottom :0;
+    left :0;
+    right :0;
+    height :100px;  
+    padding-bottom: 20px;
+}
+
+.order-add-btn .t-button{
+    width: 80%;
+}
+
+.header{
+   
+}
+.t-fab{
+    bottom:65px !important;
+}
+
+.button-danger{
+    color: red;
+}
+.orderlist {
+    border: solid;
+    height: 5vh;
+    margin-top: 3px;
+}
+
+.orderlist:hover {
+   background-color: gray;
+}
+
+
+.orderlist .orderlistTag{
+        margin-top: 1vh;
+        margin-right: 1vh;
+        float: right;
+}
+
+.orderlist .orderlistTitle{
+    float: left;
+}
+.addressBtn{
+    padding: 1vh;
+}
+
+.tipText{
+    font-size: 11px;
+    text-align: center;
+}
+
+.evaluateBtn {
+    position: relative;
+    bottom: 0;
+}

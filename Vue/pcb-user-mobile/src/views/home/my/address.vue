@@ -20,6 +20,7 @@
     </t-collapse-panel>
   </t-collapse>
   <p class="tipText">我们将严格保密您的个人信息</p>
+  <p class="tipText">在选用时，回选用您最新的一条地址</p>
   <br>
   <t-cell-group bordered>
     <t-cell v-for="item in list " :key="item" :title="item.address" />

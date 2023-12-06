@@ -2,6 +2,7 @@
 using BMS_V2_Db.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Ys.Tools.Extra;
 using Ys.Tools.Interface;
 using Ys.Tools.Response;
 
@@ -46,4 +47,16 @@ public class UserAddressBll:IBll
         return ApiResult.True(new { list, list.Count });
     }
 
+
+    /// <summary>
+    /// 获得一条
+    /// </summary>
+    /// <param name="userCode"></param>
+    /// <returns></returns>
+    public ApiResult UserAddressByUserCode(string userCode)
+    {
+        var userAddress = _dbContext.UserAddress.AsNoTracking().OrderByDescending(x => x.Id)
+            .FirstOrDefault(x => x.UserCode == userCode).NotNull($"UserAddress【{userCode}】未查询到数据");
+        return ApiResult.True(userAddress);
+    }
 }

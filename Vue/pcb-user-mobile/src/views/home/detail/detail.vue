@@ -18,7 +18,11 @@
             {{ formData.evaluate }} 元
         </t-form-item>
         <t-form-item label="工程师备注">
-            {{ formData.remark }}
+            <t-textarea v-model="formData.remark" autosize readonly />
+        </t-form-item>
+
+        <t-form-item label="物流单号">
+            {{ formData.followNum }} 
         </t-form-item>
         <div class="order-add-btn ">
             <div>
@@ -26,7 +30,13 @@
                     <t-button size="large" theme="danger" @click="cancelClick" variant="text">作废订单</t-button>
                 </div>
                 <div style="float: right;width: 50%;">
-                    <t-button v-if="formData.orderStatus == '已估价'"    @click="comfirmClick"   size="large" theme="primary">确认订单</t-button>
+                    <t-button v-if="formData.orderStatus == '已估价'" @click="comfirmClick" size="large"
+                        theme="primary">确认订单</t-button>
+                </div>
+
+                <div style="float: right;width: 50%;">
+                    <t-button v-if="formData.orderStatus == '快递已发出'" @click="isFinishCancel=true" size="large"
+                        theme="primary">已收到PCB，订单完成</t-button>
                 </div>
             </div>
         </div>
@@ -36,6 +46,13 @@
     <t-dialog v-model:visible="isShowCancel" title="确认作废吗？" content="作废后工程师将无法看到此条订单" cancel-btn="取消" confirm-btn="确认"
         @confirm="sureCancel">
     </t-dialog>
+
+
+    <t-dialog v-model:visible="isFinishCancel" title="确认已收到PCB吗？" content="线下快递信息系统不做收集" cancel-btn="取消" confirm-btn="确认"
+        @confirm="finishClick">
+    </t-dialog>
+
+
 </template>
 <script setup>
 import { h, ref, reactive, inject, onMounted } from 'vue';
@@ -51,6 +68,7 @@ const code = route.query.code;
 let param = { code: code }
 const tagTheme = ref("")
 const isShowCancel = ref(false)
+const isFinishCancel = ref(false)
 
 
 const formData = reactive({
@@ -63,7 +81,8 @@ const formData = reactive({
     evaluate: "0",
     orderStatus: "",
     realFinishTime: "",
-    remark: ""
+    remark: "",
+    followNum:""
 })
 
 const rules = {
@@ -72,62 +91,71 @@ const rules = {
     finishTime: [{ validator: (val) => val !== "", message: '请选择预计完成时间' }],
 };
 
-instance.instance.post(api.PcbOrder.Order, param).then(resp => {
-    if (!resp.success) {
-        Utils.showWarning(resp.result);
-        return;
-    }
-    else {
-        entity.value = resp.result.pcbOrder
-        formData.title = resp.result.pcbOrder.title
-        formData.comment = resp.result.pcbOrder.comment
-        formData.finishTime = resp.result.pcbOrder.finishTime
-        formData.acceptDateTime = resp.result.pcbOrder.acceptDateTime
-        formData.acceptEngineer = resp.result.pcbOrder.acceptEngineer
-        formData.code = resp.result.pcbOrder.code
-        formData.evaluate = resp.result.pcbOrder.evaluate
-        formData.orderStatus = resp.result.pcbOrder.orderStatus
-        formData.realFinishTime = resp.result.pcbOrder.realFinishTime
-        formData.remark = resp.result.pcbOrder.remark
-        if (formData.orderStatus == "未接单") {
-            tagTheme.value = "default";
-        }
-        if (formData.orderStatus == "已接单" || formData.orderStatus == "已估价" || formData.orderStatus == "确认订单" || formData.orderStatus == "已完成待发送快递" || formData.orderStatus == "快递已发出") {
-            tagTheme.value = "primary";
-        }
-        if (formData.orderStatus == "订单完成") {
-            tagTheme.value = "success";
-        }
-        if (formData.orderStatus == "订单拒绝") {
-            tagTheme.value = "danger";
-        }
-        if (formData.orderStatus == "订单作废") {
-            tagTheme.value = "danger";
-        }
-    }
-    console.log(formData)
-})
 
+//刷新
+const refresh = () => {
 
+    instance.instance.post(api.PcbOrder.Order, param).then(resp => {
+        if (!resp.success) {
+            Utils.showWarning(resp.result);
+            return;
+        }
+        else {
+            entity.value = resp.result.pcbOrder
+            formData.title = resp.result.pcbOrder.title
+            formData.comment = resp.result.pcbOrder.comment
+            formData.finishTime = resp.result.pcbOrder.finishTime
+            formData.acceptDateTime = resp.result.pcbOrder.acceptDateTime
+            formData.acceptEngineer = resp.result.pcbOrder.acceptEngineer
+            formData.code = resp.result.pcbOrder.code
+            formData.evaluate = resp.result.pcbOrder.evaluate
+            formData.orderStatus = resp.result.pcbOrder.orderStatus
+            formData.realFinishTime = resp.result.pcbOrder.realFinishTime
+            formData.remark = resp.result.pcbOrder.remark
+            formData.followNum = resp.result.pcbOrder.followNum
 
-
-
-const cancelClick = () => {
-    isShowCancel.value = true;
+            if (formData.orderStatus == "未接单") {
+                tagTheme.value = "default";
+            }
+            if (formData.orderStatus == "已接单" || formData.orderStatus == "已估价" || formData.orderStatus == "确认订单" || formData.orderStatus == "已完成待发送快递" || formData.orderStatus == "快递已发出") {
+                tagTheme.value = "primary";
+            }
+            if (formData.orderStatus == "订单完成") {
+                tagTheme.value = "success";
+            }
+            if (formData.orderStatus == "订单拒绝") {
+                tagTheme.value = "danger";
+            }
+            if (formData.orderStatus == "订单作废") {
+                tagTheme.value = "danger";
+            }
+        }
+        console.log(formData)
+    })
 
 }
 
 
+refresh()
+
+
+const cancelClick = () => {
+    isShowCancel.value = true;
+}
+
+
 const sureCancel = () => {
-  
+
     instance.instance.post(api.PcbOrder.Cancel, param).then(resp => {
         if (!resp.success) {
-            Utils.showWarning(resp.result);
+            Utils.showError(resp.result);
             return;
         } else {
             Utils.showSuccess(resp.result);
             router.back();
         }
+        refresh()
+
     })
 
 }
@@ -142,12 +170,24 @@ const comfirmClick = () => {
             return;
         } else {
             Utils.showSuccess(resp.result);
-            router.back();
         }
+        refresh()
     })
+
 
 }
 
 
-
+const finishClick = () => {
+    instance.instance.post(api.PcbOrder.Finish, param).then(resp => {
+        if (!resp.success) {
+            Utils.showWarning(resp.result);
+            return;
+        } else {
+            Utils.showSuccess(resp.result);
+            router.back();
+        }
+        refresh()
+    })
+}
 </script>
