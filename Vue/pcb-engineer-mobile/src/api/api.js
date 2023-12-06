@@ -25,5 +25,8 @@ const api={
         Login:"/EngineerLogin/Login",
         Register:"/EngineerLogin/Register"
     },
+    File:{
+        Upload:"/File/Upload"
+    }
 }
 export default api;

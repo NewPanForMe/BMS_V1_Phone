@@ -29,6 +29,10 @@ public class BmsV2DbContext : DbContext
     /// 用户地址
     /// </summary>
     public DbSet<UserAddress> UserAddress { get; set; } = null!;
+    /// <summary>
+    /// 文件上传
+    /// </summary>
+    public DbSet<FileUpload> FileUpload { get; set; } = null!;
 
     public BmsV2DbContext(DbContextOptions<BmsV2DbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

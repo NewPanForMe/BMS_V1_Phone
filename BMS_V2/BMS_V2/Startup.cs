@@ -132,8 +132,8 @@ public class Startup
     /// <param name="service"></param>
     private void RegisterProject(IServiceCollection service)
     {
-        service.Configure<ProjectConfig>(_configuration.GetSection("ProjectConfig"));
-        _configuration.Bind("ProjectConfig", ProjectConfig.Instance);
+        service.Configure<BMS_V2_Db.Config.ProjectConfig>(_configuration.GetSection("ProjectConfig"));
+        _configuration.Bind("ProjectConfig", BMS_V2_Db.Config.ProjectConfig.Instance);
     }
 
     /// <summary>

@@ -125,6 +125,8 @@ public class LoginBll : IBll
             Password = passMd5,
             PasswordSalt = passwordSalt,
             Code = Guid.NewGuid().ToString(),
+            Name = "",
+            Phone = ""
         };
         _dbContext.UserEngineer.Add(user);
         await _dbContext.SaveChangesAsync();

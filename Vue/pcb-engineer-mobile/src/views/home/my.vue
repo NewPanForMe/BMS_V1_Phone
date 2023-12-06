@@ -2,6 +2,7 @@
     <t-cell-group bordered>
         <!-- <t-cell title="地址信息" arrow hover  @click="addressClick"/> -->
         <t-cell title="退出登录" arrow hover  @click="logout"/>
+        <t-cell title="上传模板" arrow hover  @click="$router.push('/uploaddemo')"/>
     </t-cell-group>
 </template>
 <script setup>

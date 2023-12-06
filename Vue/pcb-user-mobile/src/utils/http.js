@@ -18,16 +18,20 @@ const showMessage = (theme, content) => {
     }
 };
 
-const showSuccess = (content) => showMessage('success', content);
 const showError = (content) => showMessage('error', content);
-const showWarning = (content) => showMessage('warning', content);
-const showInfo = (content) => showMessage('info', content);
 
 
 const instance = axios.create({
-    baseURL: window.server.baseUrl,
     timeout: 10000
 });
+if(window.server.isDev){
+    instance.defaults.baseURL=window.server.baseDevUrl
+}else{
+
+    instance.defaults.baseURL=window.server.baseUrl
+}
+
+
 //统一设置post请求头
 instance.defaults.headers.post["Content-Type"] = "application/json";
 instance.defaults.headers.get["Content-Type"] = "application/json";
