@@ -47,24 +47,31 @@
     </t-form>
 
 
-    <t-collapse v-if="formData.orderStatus=='确认订单'">
-            <t-collapse-panel value="0" header="点击查看快递信息">
-                <div class="content">
-                    <t-form>
-                        <t-form-item label="姓名" name="name" for="name">
-                            {{ addressData.name }}
-                        </t-form-item>
-                        <t-form-item label="电话" name="phone" for="phone">
-                            {{ addressData.phone }}
+    <t-collapse v-if="formData.orderStatus == '确认订单'">
+        <t-collapse-panel value="0" header="点击查看快递信息">
+            <div class="content">
+                <t-form>
+                    <t-form-item label="姓名" name="name" for="name">
+                        {{ addressData.name }}
+                    </t-form-item>
+                    <t-form-item label="电话" name="phone" for="phone">
+                        {{ addressData.phone }}
 
-                        </t-form-item>
-                        <t-form-item label="地址" name="address" for="address">
-                            {{ addressData.address }}
-                        </t-form-item>
-                    </t-form>
-                </div>
-            </t-collapse-panel>
-        </t-collapse>
+                    </t-form-item>
+                    <t-form-item label="地址" name="address" for="address">
+                        {{ addressData.address }}
+                    </t-form-item>
+                </t-form>
+            </div>
+        </t-collapse-panel>
+
+        
+    </t-collapse>
+
+    <p   v-if="formData.orderStatus == '确认订单'"    class="tipText">请先上传图片后，在填写物流单号</p>
+
+    <fileUpload  v-if="formData.orderStatus == '确认订单'"  v-on:code-strings="codeString" />
+
 
     <t-dialog v-model:visible="isShowRefuse" title="确认拒绝吗？" content="拒绝订单后，您可以进行重新抢单。" cancel-btn="取消" confirm-btn="确认"
         @confirm="sureRefuse">
@@ -108,13 +115,15 @@
 <script setup>
 import { h, ref, reactive, inject, onMounted } from 'vue';
 import { useRoute } from 'vue-router'
-
+import fileUpload from '@/component/upload.vue'
 const route = useRoute()
 const instance = inject("$instance")
 const router = inject("$Route")
 const api = inject("$Api")
 const Utils = inject("$Utils")
 const entity = ref()
+
+const picCodes=ref([])
 const code = route.query.code;
 let param = { code: code }
 const tagTheme = ref("")
@@ -153,7 +162,8 @@ const evaluateData = reactive({
 //物流数据
 const followData = reactive({
     code: code,
-    followNum: ""
+    followNum: "",
+    picCodes:""
 })
 
 const addressData = reactive({
@@ -177,6 +187,13 @@ const evaluateRules = {
 const followRules = {
     followNum: [{ validator: (val) => val !== "", message: '单号不能为空' }],
 };
+
+
+const codeString = (e) => {
+    picCodes.value.push(e.value)
+    console.log("picCodes",picCodes)
+}
+
 
 
 //刷新
@@ -254,6 +271,7 @@ const sureRefuse = () => {
 //报价
 const evaluateClick = (e) => {
     if (e.validateResult == true) {
+
         instance.instance.post(api.PcbOrder.Evaluate, evaluateData).then(resp => {
             if (!resp.success) {
                 Utils.showWarning(resp.result);
@@ -271,6 +289,7 @@ const evaluateClick = (e) => {
 //物流
 const followClick = (e) => {
     if (e.validateResult == true) {
+        followData.picCodes = picCodes.value.join()
         instance.instance.post(api.PcbOrder.Follow, followData).then(resp => {
             if (!resp.success) {
                 Utils.showWarning(resp.result);

@@ -33,6 +33,10 @@ public class BmsV2DbContext : DbContext
     /// 文件上传
     /// </summary>
     public DbSet<FileUpload> FileUpload { get; set; } = null!;
+    /// <summary>
+    /// 订单图片
+    /// </summary>
+    public DbSet<OrderPic> OrderPic { get; set; } = null!;
 
     public BmsV2DbContext(DbContextOptions<BmsV2DbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -78,9 +78,13 @@ namespace BMS_V2.Controllers
         }
 
         [HttpPost]
-        public ApiResult Follow(PcbOrder pcbOrder)
+        public  async Task<ApiResult> Follow(JsonElement req)
         {
-            return _pcbBll.Follow(pcbOrder);
+
+            var code = req.GetJsonString("code").HasValue("编号为空");
+            var followNum = req.GetJsonString("followNum")??"";
+            var picCodes = req.GetJsonString("picCodes") ??"";
+            return  await _pcbBll.Follow(code, followNum, picCodes);
         }
 
 

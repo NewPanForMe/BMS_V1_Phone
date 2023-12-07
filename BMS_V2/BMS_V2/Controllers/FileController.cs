@@ -26,11 +26,9 @@ namespace BMS_V2.Controllers
         [HttpPost]
         public async Task<ApiResult> Upload(IFormFile file)
         {
-            var upload = await _fileBll.Upload(file, CurrentUser.Code, CurrentUser.Name);
-            await _dbContext.SaveChangesAsync();
-            return upload;
+            return await _fileBll.Upload(file, CurrentUser.Code, CurrentUser.Name);
         }
 
-     
+
     }
 }

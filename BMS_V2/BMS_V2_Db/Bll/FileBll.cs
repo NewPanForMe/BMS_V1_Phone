@@ -25,10 +25,15 @@ public class FileBll : IBll
     /// <param name="userName"></param>
     public async Task<ApiResult> Upload(IFormFile file, string userCode, string userName)
     {
-        var fileFullPath = Path.Combine(BMS_V2_Db.Config.ProjectConfig.Instance.UploadFileFolder, DateTime.Now.ToString("yyyy-MM-dd"));
+        var dateTime = DateTime.Now.ToString("yyyy-MM-dd");
+        var fileFullPath = Path.Combine(BMS_V2_Db.Config.ProjectConfig.Instance.UploadFileFolder, dateTime);
         if (!Directory.Exists(fileFullPath)) Directory.CreateDirectory(fileFullPath);
-        Console.WriteLine($"fileFullPath={fileFullPath}");
-        var filePath = fileFullPath + "\\" + Guid.NewGuid() + "-" + file.FileName;
+        var fileName = Guid.NewGuid() + "-" + file.FileName;
+        //绝对路径
+        var filePath = fileFullPath + "\\" + fileName;
+        //相对路径
+        var relativePath = dateTime + "\\" + fileName;
+
         await using var stream = System.IO.File.Create(filePath);
         await file.CopyToAsync(stream);
         var files = new FileUpload()
@@ -38,11 +43,12 @@ public class FileBll : IBll
             Code = Guid.NewGuid().ToString(),
             CreateDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
             FullName = file.FileName,
-            Location = filePath
+            Location = filePath,
+            RelativePath = relativePath
         };
-        await _dbContext.FileUpload.AddAsync(files);
-        await _dbContext.SaveChangesAsync();
-        return ApiResult.True(new { code = files.Code, location = files.Location });
+        _dbContext.FileUpload.Add(files);
+        await _dbContext.SaveChangesAsync();    
+        return ApiResult.True(new { code = files.Code, location = files.RelativePath, });
     }
 
 

@@ -56,7 +56,9 @@ public class UserAddressBll:IBll
     public ApiResult UserAddressByUserCode(string userCode)
     {
         var userAddress = _dbContext.UserAddress.AsNoTracking().OrderByDescending(x => x.Id)
-            .FirstOrDefault(x => x.UserCode == userCode).NotNull($"UserAddress【{userCode}】未查询到数据");
+            .FirstOrDefault(x => x.UserCode == userCode);
         return ApiResult.True(userAddress);
     }
+
+
 }

@@ -146,14 +146,34 @@ public class PcbOrderBll : IBll
     /// <summary>
     /// 寄送快递
     /// </summary>
-    /// <param name="pcbOrder"></param>
+    /// <param name="code"></param>
+    /// <param name="followNum"></param>
+    /// <param name="picCode"></param>
     /// <returns></returns>
-    public ApiResult Follow(PcbOrder pcbOrder)
+    public  async Task<ApiResult> Follow(string code , string followNum,string picCode)
     {
-        var pcbOrderDb = _dbContext.PcbOrder.FirstOrDefault(x => x.Code == pcbOrder.Code).NotNull($"Cancel【{pcbOrder.Code}】未查询到数据");
-        pcbOrderDb.FollowNum = pcbOrder.FollowNum;
+        var pcbOrderDb = _dbContext.PcbOrder.FirstOrDefault(x => x.Code == code).NotNull($"Cancel【{code}】未查询到数据");
+        pcbOrderDb.FollowNum = followNum;
         pcbOrderDb.OrderStatus = OrderStatus.快递已发出.ToString();
-        _dbContext.SaveChanges();
+
+        var strings = picCode.Split(',');
+        var list  = new List<OrderPic>();
+        foreach (var s in strings)
+        {
+            var newPic = new OrderPic()
+            {
+                Code = Guid.NewGuid().ToString(),
+                OrderCode = code,
+                PicCode = s
+            };
+            list.Add(newPic);
+        }
+
+
+
+        _dbContext.OrderPic.AddRange(list);
+
+       await _dbContext.SaveChangesAsync();
         return ApiResult.True("填写成功,快递已发出");
     }
 
