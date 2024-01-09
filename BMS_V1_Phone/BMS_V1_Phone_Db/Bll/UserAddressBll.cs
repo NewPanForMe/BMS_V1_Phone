@@ -11,10 +11,10 @@ namespace BMS_V1_Phone.Bll;
 public class UserAddressBll:IBll
 {
 
-    private readonly BmsV2DbContext _dbContext;
+    private readonly BmsV1PhoneDbContext _dbContext;
     private readonly ILogger<UserAddress> _logger;
 
-    public UserAddressBll(BmsV2DbContext dbContext, ILogger<UserAddress> logger)
+    public UserAddressBll(BmsV1PhoneDbContext dbContext, ILogger<UserAddress> logger)
     {
         _dbContext = dbContext;
         _logger = logger;

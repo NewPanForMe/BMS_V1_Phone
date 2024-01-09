@@ -14,9 +14,9 @@ namespace BMS_V2.Controllers
     [Authorize]
     public class FileController : BaseController
     {
-        private readonly BmsV2DbContext _dbContext;
+        private readonly BmsV1PhoneDbContext _dbContext;
         private readonly FileBll _fileBll;
-        public FileController(BmsV2DbContext dbContext, FileBll fileBll)
+        public FileController(BmsV1PhoneDbContext dbContext, FileBll fileBll)
         {
             _dbContext = dbContext;
             _fileBll = fileBll;

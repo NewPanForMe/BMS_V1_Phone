@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "BMS_V2": {
+    "BMS_V1_Phone": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

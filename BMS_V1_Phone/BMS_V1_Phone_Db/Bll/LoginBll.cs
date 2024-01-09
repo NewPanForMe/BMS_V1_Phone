@@ -11,10 +11,10 @@ namespace BMS_V1_Phone.Bll;
 
 public class LoginBll : IBll
 {
-    private readonly BmsV2DbContext _dbContext;
+    private readonly BmsV1PhoneDbContext _dbContext;
     private readonly ILogger<LoginBll> _logger;
 
-    public LoginBll(BmsV2DbContext dbContext, ILogger<LoginBll> logger)
+    public LoginBll(BmsV1PhoneDbContext dbContext, ILogger<LoginBll> logger)
     {
         _dbContext = dbContext;
         _logger = logger;

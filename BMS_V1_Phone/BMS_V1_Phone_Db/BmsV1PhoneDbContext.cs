@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace BMS_V1_Phone;
-public class BmsV2DbContext : DbContext
+public class BmsV1PhoneDbContext : DbContext
 {
     /// <summary>
     /// 用户
@@ -38,7 +38,7 @@ public class BmsV2DbContext : DbContext
     /// </summary>
     public DbSet<OrderPic> OrderPic { get; set; } = null!;
 
-    public BmsV2DbContext(DbContextOptions<BmsV2DbContext> options) : base(options) { }
+    public BmsV1PhoneDbContext(DbContextOptions<BmsV1PhoneDbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);

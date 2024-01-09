@@ -121,7 +121,7 @@ public class Startup
         _configuration.Bind("DbConfig", DbConfig.Instance);
         //已经注入，可以直接使用
         service.AddEntityFrameworkNpgsql();
-        service.AddNpgsql<BmsV2DbContext>(DbConfig.Instance.PgSql);
+        service.AddNpgsql<BmsV1PhoneDbContext>(DbConfig.Instance.PgSql);
     }
 
 

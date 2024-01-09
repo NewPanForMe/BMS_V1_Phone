@@ -11,10 +11,10 @@ namespace BMS_V1_Phone.Bll;
 
 public class PcbOrderBll : IBll
 {
-    private readonly BmsV2DbContext _dbContext;
+    private readonly BmsV1PhoneDbContext _dbContext;
     private readonly ILogger<PcbOrderBll> _logger;
 
-    public PcbOrderBll(BmsV2DbContext dbContext, ILogger<PcbOrderBll> logger)
+    public PcbOrderBll(BmsV1PhoneDbContext dbContext, ILogger<PcbOrderBll> logger)
     {
         _dbContext = dbContext;
         _logger = logger;

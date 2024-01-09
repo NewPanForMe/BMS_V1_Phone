@@ -10,8 +10,8 @@ namespace BMS_V1_Phone.Bll;
 
 public class FileBll : IBll
 {
-    private readonly BmsV2DbContext _dbContext;
-    public FileBll(BmsV2DbContext dbContext)
+    private readonly BmsV1PhoneDbContext _dbContext;
+    public FileBll(BmsV1PhoneDbContext dbContext)
     {
         _dbContext = dbContext;
     }
